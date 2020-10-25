@@ -3,15 +3,18 @@
     <h1>{{ titulo }}</h1>
     <h3 v-show="message">{{ message }}</h3>
 
-    <input type="search" name="filtro" id="filtro" class="filtro" placeholder="Aplicar filtro (título)" v-on:input="filtro = $event.target.value" />
+    <input type="search" name="filtro" id="filtro" class="filtro" placeholder="Aplicar filtro (título)" v-model="filtro" />
 
     <ul>
       <li v-for="foto in fotosComFiltro">
         <meu-painel :titulo="foto.titulo">
-            <img :src="foto.url" :alt="foto.titulo" v-meu-transform:scale="1.5">
-            <meu-botao 
+            <img :src="foto.url" :alt="foto.titulo" v-meu-transform:scale>
+            <router-link :to="{name: 'altera', params: { id: foto._id}}">
+              <meu-botao tipo="button" rotulo="EDITAR" estilo="padrao" />
+            </router-link>
+            <meu-botao
               tipo="button" 
-              rotulo = "X" 
+              rotulo = "EXCLUIR" 
               @botaoAtivado="remove(foto)" 
               :confirmacao="true" 
               textoConfirmacao="Deseja excluir essa foto?"
@@ -88,7 +91,11 @@
       fotosComFiltro() {
         if (this.filtro) {
           let exp = new RegExp(this.filtro.trim(), 'i');
-          return this.fotos.filter((foto) => exp.test(foto.titulo));
+          let result = this.fotos.filter((foto) => exp.test(foto.titulo));
+
+          // this.message = (result.length < 1) ? 'Nenhuma foto atende ao filtro especificado.' : '';
+
+          return result;
         } else {
           return this.fotos;
         }
@@ -108,6 +115,8 @@
       this.service = new service(this.$resource);
       this.service.lista()
       .then(fotos => this.fotos = fotos, err=> console.log(err));
+
+      this.filtro = this.$route.params.filter || '';
     }
   }
   </script>
