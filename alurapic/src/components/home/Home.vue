@@ -44,37 +44,15 @@
 
     methods: {
       remove(foto) {
-
-        // this.$http.delete(`v1/fotos/${foto._id}`)
-        // .then(() => {
-        //   this.message = 'Foto removida com sucesso';
-        //   let index = this.fotos.indexOf(foto);
-        //   this.fotos.splice(index, 1);
-        // }, err => {
-        //   this.message = 'Não foi possível remover a foto.';
-        //   console.log(err);
-        // });
-
-        // this.resource.delete({id: foto._id})
-        // .then(() => {
-        //   this.message = 'Foto removida com sucesso';
-        //   let index = this.fotos.indexOf(foto);
-        //   this.fotos.splice(index, 1);
-        // }, err => {
-        //   this.message = 'Não foi possível remover a foto.';
-        //   console.log(err);
-        // });
-
         this.service.apaga(foto._id)
-        .then(() => {
-          this.message = 'Foto removida com sucesso';
-          let index = this.fotos.indexOf(foto);
-          this.fotos.splice(index, 1);
-        }, err => {
-          this.message = 'Não foi possível remover a foto.';
-          console.log(err);
-        });
-
+        .then(
+          () => {
+            this.message = 'Foto removida com sucesso';
+            let index = this.fotos.indexOf(foto);
+            this.fotos.splice(index, 1);
+          }, 
+          err => this.message = err.message
+        );
       }
     },
 
@@ -93,30 +71,30 @@
           let exp = new RegExp(this.filtro.trim(), 'i');
           let result = this.fotos.filter((foto) => exp.test(foto.titulo));
 
-          // this.message = (result.length < 1) ? 'Nenhuma foto atende ao filtro especificado.' : '';
+          this.message = (result.length < 1) ? 'Nenhuma foto atende ao filtro especificado.' : '';
 
           return result;
         } else {
+          if(this.fotos.length > 0) this.message = '';
           return this.fotos;
         }
       }      
     },
 
     created() {
-      // let promise = this.$http.get('v1/fotos')
-      // .then(res => res.json())
-      // .then(fotos => this.fotos = fotos, err=> console.log(err));
-
-      // this.resource = this.$resource('v1/fotos{/id}');
-      // this.resource.query()
-      // .then(res => res.json())
-      // .then(fotos => this.fotos = fotos, err=> console.log(err));
-
       this.service = new service(this.$resource);
       this.service.lista()
-      .then(fotos => this.fotos = fotos, err=> console.log(err));
+      .then(
+        fotos => {
+          this.fotos = fotos
+          if (this.fotos.length > 0) {
+            this.filtro = this.$route.params.filter || '';
+          }
+        }, 
+        err => this.message = err.message
+      );
 
-      this.filtro = this.$route.params.filter || '';
+
     }
   }
   </script>
