@@ -1,0 +1,19 @@
+
+      /*let fotos = [
+        {
+          path: `/src/assets/pet(1).jpg`,
+          titulo: 'Zeus'
+        },
+        {
+          path: `/src/assets/pet(2).jpg`,
+          titulo: 'Mew'
+        },
+        {
+          path: `/src/assets/pet(3).jpg`,
+          titulo: 'Alok'
+        },
+        {
+          path: `/src/assets/pet(4).jpg`,
+          titulo: 'Buck'
+        }
+        ];*/
